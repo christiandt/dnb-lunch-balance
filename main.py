@@ -1,3 +1,4 @@
+import os
 from microsmycentral import MicrosMycentral
 import getpass
 import keyring
@@ -7,13 +8,18 @@ import sys
 username = ""
 balance = 0
 
+username_file_path = os.path.join(
+    os.path.expanduser("~/.config"),
+    "dnb-lunch-username"
+)
+
 
 def main():
     global balance
     global username
 
     try:
-        with open('username.txt', 'rb') as username_file:
+        with open(username_file_path, 'rb') as username_file:
             username = username_file.read().strip()
     except IOError as e:
         if "No such file" in str(e):
@@ -33,7 +39,7 @@ def main():
 def set_credentials():
     global username
     username = raw_input('Add dnb email: ')
-    with open('username.txt', 'wb') as username_file:
+    with open(username_file_path, 'wb') as username_file:
         username_file.write(username)
     keyring.set_password("pylunch", username, getpass.getpass(prompt='Add password: '))
 
